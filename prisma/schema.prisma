@@ -1,0 +1,42 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+model Player {
+  id      String  @id @default(auto()) @map("_id") @db.ObjectId
+  name    String
+  age     Int
+  country String
+  iplteam String?
+  Stats   Stats[]
+}
+
+model Stats {
+  id                String @id @default(auto()) @map("_id") @db.ObjectId
+  playerId          String @db.ObjectId
+  format            String
+  matches           Int
+  innings           Int
+  runs              Int
+  average           Float
+  centuries         Int
+  halfcenturies     Int
+  overs             Float
+  wickets           Int
+  bowlingAverage    Float
+  bowlingEconomy    Float
+  bowlingStrikeRate Float
+  catches           Int
+  player            Player @relation(fields: [playerId], references: [id], onDelete: Cascade)
+}
