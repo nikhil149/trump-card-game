@@ -1,9 +1,19 @@
 import Link from "next/link";
 
-const PlayerGrid = ({ players }: any) => {
+interface CricketPlayer {
+  players: {
+    id: string;
+    name: string;
+    age: number | null;
+    country: string;
+    iplteam?: string | null | undefined;
+  }[];
+}
+
+const PlayerGrid: React.FC<CricketPlayer> = ({ players }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      {players.map((player: any) => (
+      {players.map((player) => (
         <div
           key={player.name}
           className="p-4 border border-gray-200 rounded shadow-md"
