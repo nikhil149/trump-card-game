@@ -15,7 +15,7 @@ const PlayerGrid: React.FC<CricketPlayer> = ({ players }) => {
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {players.map((player) => (
         <div
-          key={player.name}
+          key={player.id}
           className="p-4 border border-gray-200 rounded shadow-md"
         >
           <h3 className="text-lg font-medium">{player.name}</h3>

@@ -1,4 +1,5 @@
 import client from "@/libs/prismadb";
+import { NextResponse } from "next/server";
 
 interface IParams {
   playerId: string;
@@ -11,7 +12,7 @@ export async function POST(request: Request, { params }: { params: IParams }) {
     const stats = await client.stats.create({
       data: { ...body, playerId: playerId },
     });
-    return stats;
+    return NextResponse.json(stats);
   } catch (error) {
     console.log("Unable to fecth Stats");
   }
