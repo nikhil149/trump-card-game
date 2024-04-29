@@ -2,7 +2,7 @@ import client from "@/libs/prismadb";
 
 export default async function getPlayerById(playerId: string) {
   try {
-    const player = await client.stats.findFirst({
+    const player = await client.stats.findUnique({
       where: { playerId: playerId },
     });
     return player;

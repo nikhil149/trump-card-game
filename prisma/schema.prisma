@@ -36,7 +36,7 @@ model Player {
 
 model Stats {
   id                String @id @default(auto()) @map("_id") @db.ObjectId
-  playerId          String @db.ObjectId
+  playerId          String @unique @db.ObjectId
   format            String
   matches           Int
   innings           Int

@@ -27,22 +27,6 @@ interface PlayerFormProps {
     | undefined;
 }
 
-const initialState = {
-  matches: 0,
-  format: "test",
-  innings: 0,
-  runs: 0,
-  average: 0,
-  centuries: 0,
-  highScore: 0,
-  halfcenturies: 0,
-  overs: 0,
-  wickets: 0,
-  bowlingAverage: 0,
-  bowlingEconomy: 0,
-  bowlingStrikeRate: 0,
-  catches: 0,
-};
 const reducer = (
   state: any,
   action: { type: string; payload: number | string }
@@ -83,7 +67,7 @@ const reducer = (
 };
 
 const PlayerForm: React.FC<PlayerFormProps> = ({ playerStats }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, playerStats);
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // console.log("STATS", state);
