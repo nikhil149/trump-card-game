@@ -4,6 +4,7 @@ import { SignupFormSchema, FormState } from "@/libs/definitions";
 import client from "@/libs/prismadb";
 import { createSession, deleteSession } from "@/libs/session";
 import { redirect } from "next/navigation";
+import axios from "axios";
 
 export async function onsignup(state: FormState, formData: FormData) {
   // Validate form fields
@@ -29,22 +30,12 @@ export async function onsignup(state: FormState, formData: FormData) {
     hashedPassword = await bcrypt.hash(password, 10);
   }
 
-  let user = await client.user.create({
-    data: {
-      name: name,
-      email: email,
-      hashedPassword: hashedPassword,
-      isAdmin: false,
-    },
+  const user = await axios.post("/api/users/signup", {
+    name: name,
+    email: email,
+    hashedPassword: hashedPassword,
+    isAdmin: false,
   });
-
-  if (!user) {
-    return {
-      message: "An error occurred while creating your account.",
-    };
-  }
-
-  await createSession(user.id);
 
   redirect("/play");
 }

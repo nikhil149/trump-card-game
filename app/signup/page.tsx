@@ -3,7 +3,7 @@ import { onsignup } from "@/app/actions/auth";
 import SignupButton from "@/components/signup-button";
 import { useFormState } from "react-dom";
 
-export function SignupForm() {
+export default function SignupForm() {
   const [state, action] = useFormState(onsignup, undefined);
   return (
     <div>

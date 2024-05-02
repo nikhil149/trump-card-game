@@ -1,3 +1,4 @@
+"use server";
 import { SignJWT, jwtVerify } from "jose";
 import { SessionPayload } from "@/libs/definitions";
 import { cookies } from "next/headers";
@@ -35,7 +36,7 @@ export async function createSession(userId: string) {
     path: "/",
   });
 }
-export function deleteSession() {
+export async function deleteSession() {
   cookies().delete("session");
 }
 
