@@ -2,6 +2,7 @@
 import { SignJWT, jwtVerify } from "jose";
 import { SessionPayload } from "@/libs/definitions";
 import { cookies } from "next/headers";
+import client from "./prismadb";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -14,7 +15,7 @@ export async function updateSession() {
     return null;
   }
 
-  const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  const expires = new Date(Date.now() + 60 * 60 * 1000);
   cookies().set("session", session, {
     httpOnly: true,
     secure: true,
@@ -25,8 +26,15 @@ export async function updateSession() {
 }
 
 export async function createSession(userId: string) {
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-  const session = await encrypt({ userId, expiresAt });
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+
+  //   update session in db
+  const data = await client.session.create({
+    data: { userId: userId, expires: expiresAt },
+  });
+  const sessionId = data.id;
+
+  const session = await encrypt({ sessionId, expiresAt });
 
   cookies().set("session", session, {
     httpOnly: true,
@@ -37,6 +45,16 @@ export async function createSession(userId: string) {
   });
 }
 export async function deleteSession() {
+  const session = cookies().get("session")?.value;
+  const payload = await decrypt(session);
+
+  if (!session || !payload) {
+    return null;
+  }
+  await client.session.delete({
+    where: { id: payload.sessionId as string },
+  });
+
   cookies().delete("session");
 }
 
@@ -44,7 +62,7 @@ export async function encrypt(payload: SessionPayload) {
   return new SignJWT(payload)
     .setProtectedHeader({ alg: "HS256" })
     .setIssuedAt()
-    .setExpirationTime("7d")
+    .setExpirationTime("1d")
     .sign(encodedKey);
 }
 
@@ -53,6 +71,8 @@ export async function decrypt(session: string | undefined = "") {
     const { payload } = await jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     });
+    console.log("Decrypt", payload);
+
     return payload;
   } catch (error) {
     console.log("Failed to verify session");

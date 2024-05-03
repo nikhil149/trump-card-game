@@ -50,10 +50,10 @@ export async function onlogin(state: any, formData: FormData) {
   if (!userEmail) {
     return { error: "Email is required" };
   }
-  const isEmailValid = await client.user.findUnique({
-    where: { email: userEmail },
+  const { data: user } = await axios.get("/api/users/login", {
+    params: { email: userEmail },
   });
-  if (!isEmailValid?.email || !isEmailValid?.hashedPassword) {
+  if (!user) {
     return { error: "Email is not valid" };
   }
   if (!userPassword) {
@@ -61,12 +61,14 @@ export async function onlogin(state: any, formData: FormData) {
   }
   const isCorrrectPassword = await bcrypt.compare(
     userPassword,
-    isEmailValid.hashedPassword
+    user.hashedPassword
   );
-  if (isCorrrectPassword) redirect("/play");
+  if (isCorrrectPassword) {
+    createSession(user.id);
+    redirect("/play");
+  }
 }
 
 export async function logout() {
   deleteSession();
-  redirect("/login");
 }
