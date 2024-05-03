@@ -32,7 +32,7 @@ export default function SignupForm() {
             </ul>
           </div>
         )}
-        <SignupButton />
+        <SignupButton buttonText="Sign Up" />
       </form>
     </div>
   );

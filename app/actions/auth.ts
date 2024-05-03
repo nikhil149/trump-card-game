@@ -1,6 +1,10 @@
 import bcrypt from "bcryptjs";
 
-import { SignupFormSchema, FormState } from "@/libs/definitions";
+import {
+  SignupFormSchema,
+  FormState,
+  LoginFormState,
+} from "@/libs/definitions";
 import client from "@/libs/prismadb";
 import { createSession, deleteSession } from "@/libs/session";
 import { redirect } from "next/navigation";
@@ -38,6 +42,28 @@ export async function onsignup(state: FormState, formData: FormData) {
   });
 
   redirect("/play");
+}
+
+export async function onlogin(state: any, formData: FormData) {
+  const userEmail = formData.get("email")?.toString();
+  const userPassword = formData.get("password")?.toString();
+  if (!userEmail) {
+    return { error: "Email is required" };
+  }
+  const isEmailValid = await client.user.findUnique({
+    where: { email: userEmail },
+  });
+  if (!isEmailValid?.email || !isEmailValid?.hashedPassword) {
+    return { error: "Email is not valid" };
+  }
+  if (!userPassword) {
+    return { error: "Please enter password" };
+  }
+  const isCorrrectPassword = await bcrypt.compare(
+    userPassword,
+    isEmailValid.hashedPassword
+  );
+  if (isCorrrectPassword) redirect("/play");
 }
 
 export async function logout() {

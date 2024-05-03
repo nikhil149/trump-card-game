@@ -28,7 +28,17 @@ export type FormState =
     }
   | undefined;
 
+export type LoginFormState =
+  | {
+      errors?: {
+        email?: string[];
+        password?: string[];
+      };
+      message?: string;
+    }
+  | undefined;
+
 export type SessionPayload = {
   expiresAt: Date;
-  userId: string;
+  sessionId: string;
 };
