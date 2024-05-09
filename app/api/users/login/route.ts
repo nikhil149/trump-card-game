@@ -1,10 +1,11 @@
 import client from "@/libs/prismadb";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET(request: Request) {
-  const email = request.url.split("?")[1].split("=")[1].toLocaleLowerCase();
+export async function GET(request: NextRequest) {
+  const email = request.nextUrl.searchParams.get("email");
+  if (!email) return { error: "Please provide an Email" };
   const user = await client.user.findUnique({
-    where: { email: "nikhilrachawar100@gmail.com" },
+    where: { email: email },
   });
   if (!user) {
     return null;

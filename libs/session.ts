@@ -3,6 +3,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { SessionPayload } from "@/libs/definitions";
 import { cookies } from "next/headers";
 import client from "./prismadb";
+import { redirect } from "next/navigation";
 
 const secretKey = process.env.SESSION_SECRET;
 const encodedKey = new TextEncoder().encode(secretKey);
@@ -56,6 +57,8 @@ export async function deleteSession() {
   });
 
   cookies().delete("session");
+
+  redirect("/login");
 }
 
 export async function encrypt(payload: SessionPayload) {
