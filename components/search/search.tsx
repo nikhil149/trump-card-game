@@ -1,5 +1,6 @@
 "use client";
 import getUsersByName from "@/app/actions/getUsersByName";
+import axios from "axios";
 import { ChangeEvent, useState } from "react";
 
 const Search = () => {
@@ -11,6 +12,13 @@ const Search = () => {
     setSearchValue(value);
   };
 
+  const searchClickHandler = async () => {
+    const users = await axios.get("/api/users/search", {
+      params: { search: searchValue },
+    });
+    console.log(users.data);
+  };
+
   return (
     <div>
       <label htmlFor="search">Search Your Friend</label>
@@ -20,7 +28,7 @@ const Search = () => {
         value={searchValue}
         onChange={(e) => searchHandler(e)}
       />
-      <button onClick={() => getUsersByName(searchValue)}>Search</button>
+      <button onClick={() => searchClickHandler()}>Search</button>
     </div>
   );
 };
