@@ -16,11 +16,11 @@ export async function updateSession() {
     return null;
   }
 
-  const expires = new Date(Date.now() + 60 * 60 * 1000);
+  const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
   cookies().set("session", session, {
     httpOnly: true,
     secure: true,
-    expires: expires,
+    expires: expiresAt,
     sameSite: "lax",
     path: "/",
   });
@@ -31,7 +31,7 @@ export async function createSession(userId: string) {
 
   //   update session in db
   const data = await client.session.create({
-    data: { userId: userId, expires: expiresAt },
+    data: { userId: userId, expireAt: expiresAt },
   });
   const sessionId = data.id;
 
